@@ -13,6 +13,7 @@ import {
     Music,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { playlist } from "@/constants/musics";
 
 export default function MusicPlayer() {
     const [isPlaying, setIsPlaying] = useState(false);
@@ -22,46 +23,55 @@ export default function MusicPlayer() {
     const [currentTime, setCurrentTime] = useState(0);
     const [volume, setVolume] = useState(0.7);
     const [isMuted, setIsMuted] = useState(false);
+    const [trackDurations, setTrackDurations] = useState<number[]>(
+        Array(playlist.length).fill(0)
+    );
+    const [loadingDurations, setLoadingDurations] = useState(true);
     const audioRef = useRef<HTMLAudioElement | null>(null);
 
-    const playlist = [
-        {
-            title: "Ali Sorena - Nemitarsam",
-            artist: "Ali Sorena",
-            duration: "4:12",
-            src: "https://cdn.musicgitar.ir/Music/Ali%20Sorena/320/Ali%20Sorena%20-%20Nemitarsam%20[320].mp3",
-        },
-        {
-            title: "Lofi Study Beat",
-            artist: "ChillHop",
-            duration: "3:45",
-            src: "https://dl.dropboxusercontent.com/s/e93f89ggbvcboil/lofi-study-beat.mp3",
-        },
-        {
-            title: "Ambient Coding",
-            artist: "CodeBeats",
-            duration: "4:20",
-            src: "https://dl.dropboxusercontent.com/s/e93f89ggbvcboil/lofi-study-beat.mp3",
-        },
-        {
-            title: "Synthwave Night",
-            artist: "RetroWave",
-            duration: "3:15",
-            src: "https://dl.dropboxusercontent.com/s/e93f89ggbvcboil/lofi-study-beat.mp3",
-        },
-        {
-            title: "Deep Focus",
-            artist: "BrainFM",
-            duration: "5:30",
-            src: "https://dl.dropboxusercontent.com/s/e93f89ggbvcboil/lofi-study-beat.mp3",
-        },
-        {
-            title: "Jazz Coding Session",
-            artist: "DevJazz",
-            duration: "4:45",
-            src: "https://dl.dropboxusercontent.com/s/e93f89ggbvcboil/lofi-study-beat.mp3",
-        },
-    ];
+    // Load durations for all tracks
+    useEffect(() => {
+        const loadAllDurations = async () => {
+            setLoadingDurations(true);
+            const durations = [...trackDurations];
+
+            for (let i = 0; i < playlist.length; i++) {
+                if (durations[i] === 0) {
+                    const audio = new Audio();
+                    audio.src = playlist[i].src;
+
+                    // Create a promise that resolves when metadata is loaded
+                    const durationPromise = new Promise<number>((resolve) => {
+                        audio.addEventListener("loadedmetadata", () => {
+                            resolve(audio.duration);
+                        });
+
+                        // Fallback if metadata loading fails
+                        audio.addEventListener("error", () => {
+                            console.error(
+                                `Error loading audio metadata for track ${i}`
+                            );
+                            resolve(0);
+                        });
+                    });
+
+                    try {
+                        durations[i] = await durationPromise;
+                    } catch (e) {
+                        console.error(
+                            `Failed to load duration for track ${i}:`,
+                            e
+                        );
+                    }
+                }
+            }
+
+            setTrackDurations(durations);
+            setLoadingDurations(false);
+        };
+
+        loadAllDurations();
+    }, []);
 
     useEffect(() => {
         if (audioRef.current) {
@@ -76,6 +86,10 @@ export default function MusicPlayer() {
 
             const handleLoadedMetadata = () => {
                 setDuration(audio.duration);
+                // Update the duration in our trackDurations array
+                const newDurations = [...trackDurations];
+                newDurations[currentTrack] = audio.duration;
+                setTrackDurations(newDurations);
             };
 
             const handleEnded = () => {
@@ -98,7 +112,7 @@ export default function MusicPlayer() {
                 audio.removeEventListener("ended", handleEnded);
             };
         }
-    }, [currentTrack]);
+    }, [currentTrack, trackDurations]);
 
     const togglePlay = () => {
         if (audioRef.current) {
@@ -158,6 +172,7 @@ export default function MusicPlayer() {
     };
 
     const formatTime = (time: number) => {
+        if (!time || isNaN(time)) return "0:00";
         const minutes = Math.floor(time / 60);
         const seconds = Math.floor(time % 60);
         return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
@@ -190,9 +205,7 @@ export default function MusicPlayer() {
                         {playlist[currentTrack].title}
                     </div>
                     <div className="text-[10px] text-zinc-500">
-                        {formatTime(currentTime)} /{" "}
-                        {formatTime(duration) ||
-                            playlist[currentTrack].duration}
+                        {formatTime(currentTime)} / {formatTime(duration)}
                     </div>
                 </div>
                 <div className="text-[10px] text-zinc-400 mb-2">
@@ -266,7 +279,7 @@ export default function MusicPlayer() {
                         <span>{playlist.length} tracks</span>
                     </div>
                 </div>
-                <div className="mt-1 space-y-1 max-h-[100px] overflow-y-auto custom-scrollbar">
+                <div className="mt-1 space-y-1 max-h-[130px] overflow-y-auto custom-scrollbar">
                     {playlist.map((track, index) => (
                         <div
                             key={index}
@@ -299,7 +312,11 @@ export default function MusicPlayer() {
                                     {track.title}
                                 </span>
                             </div>
-                            <span>{track.duration}</span>
+                            <span>
+                                {loadingDurations && trackDurations[index] === 0
+                                    ? "..."
+                                    : formatTime(trackDurations[index])}
+                            </span>
                         </div>
                     ))}
                 </div>
