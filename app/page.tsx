@@ -141,7 +141,7 @@ export default function Home() {
                         <CardContent className="p-3">
                             <AsciiDecorator position="top-right" />
                             <TerminalPrompt
-                                command="wakatime --week"
+                                command="wakatime --all"
                                 className="text-left mb-2"
                             />
                             <WakaTimeStats />
