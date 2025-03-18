@@ -1,83 +1,18 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import {
-    BarChart,
-    GitFork,
-    Star,
-    Users,
-    Github,
-    Terminal,
-    ExternalLink,
-} from "lucide-react";
+import { BarChart, GitFork, Star, Users, Github, Terminal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-
-interface GitHubData {
-    repos: number;
-    stars: number;
-    followers: number;
-    contributions: number;
-}
+import { siteConfig } from "@/constants/site";
+import { useGithubStats } from "@/hooks/use-github-stats";
 
 export default function GithubStats() {
-    const [stats, setStats] = useState<GitHubData>({
-        repos: 0,
-        stars: 0,
-        followers: 0,
-        contributions: 0,
-    });
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
+    const { data: stats, isLoading } = useGithubStats();
     const [terminalLines, setTerminalLines] = useState<string[]>([]);
-    const [showCursor, setShowCursor] = useState(true);
-    const username = "ho3einwave";
+    const username = siteConfig.github_username;
 
     useEffect(() => {
-        const fetchGitHubData = async () => {
-            try {
-                setLoading(true);
-                // Fetch basic user data
-                const userResponse = await fetch(
-                    `https://api.github.com/users/${username}`
-                );
-                const userData = await userResponse.json();
-
-                // Fetch repositories to calculate stars
-                const reposResponse = await fetch(
-                    `https://api.github.com/users/${username}/repos?per_page=100`
-                );
-                const reposData = await reposResponse.json();
-
-                // Calculate total stars
-                const totalStars = reposData.reduce(
-                    (acc: number, repo: any) => acc + repo.stargazers_count,
-                    0
-                );
-
-                setStats({
-                    repos: userData.public_repos || 0,
-                    stars: totalStars,
-                    followers: userData.followers || 0,
-                    contributions: 847, // This is a placeholder since GitHub API doesn't provide this directly
-                });
-            } catch (err) {
-                console.error("Error fetching GitHub data:", err);
-                setError(true);
-                // Fallback to sample data
-                setStats({
-                    repos: 24,
-                    stars: 142,
-                    followers: 38,
-                    contributions: 847,
-                });
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchGitHubData();
-
         // Terminal animation
         const lines = [
             `> git clone https://github.com/${username}`,
@@ -112,14 +47,8 @@ export default function GithubStats() {
             }
         }, 300);
 
-        // Blinking cursor
-        const cursorInterval = setInterval(() => {
-            setShowCursor((prev) => !prev);
-        }, 500);
-
         return () => {
             clearInterval(interval);
-            clearInterval(cursorInterval);
         };
     }, [username]);
 
@@ -133,7 +62,7 @@ export default function GithubStats() {
                     <div>
                         <div className="text-xs text-zinc-400">Repos</div>
                         <div className="text-sm font-bold text-zinc-200">
-                            {loading ? "..." : stats.repos}
+                            {isLoading ? "..." : stats?.repos || 0}
                         </div>
                     </div>
                 </div>
@@ -144,7 +73,7 @@ export default function GithubStats() {
                     <div>
                         <div className="text-xs text-zinc-400">Stars</div>
                         <div className="text-sm font-bold text-zinc-200">
-                            {loading ? "..." : stats.stars}
+                            {isLoading ? "..." : stats?.stars || 0}
                         </div>
                     </div>
                 </div>
@@ -155,7 +84,7 @@ export default function GithubStats() {
                     <div>
                         <div className="text-xs text-zinc-400">Followers</div>
                         <div className="text-sm font-bold text-zinc-200">
-                            {loading ? "..." : stats.followers}
+                            {isLoading ? "..." : stats?.followers || 0}
                         </div>
                     </div>
                 </div>
@@ -166,7 +95,7 @@ export default function GithubStats() {
                     <div>
                         <div className="text-xs text-zinc-400">Commits</div>
                         <div className="text-sm font-bold text-zinc-200">
-                            {loading ? "..." : stats.contributions}
+                            {isLoading ? "..." : stats?.contributions || 0}
                         </div>
                     </div>
                 </div>
@@ -193,9 +122,6 @@ export default function GithubStats() {
                             {line}
                         </div>
                     ))}
-                    {/* {showCursor && (
-                        <span className="text-zinc-300 animate-pulse">_</span>
-                    )} */}
                 </div>
             </div>
 

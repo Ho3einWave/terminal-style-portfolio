@@ -20,6 +20,7 @@ import PopularRepos from "@/components/popular-repos";
 import AsciiDecorator from "@/components/ascii-decorator";
 import MusicPlayer from "@/components/music-player";
 import SocialButton from "@/components/social-button";
+import { siteConfig } from "@/constants/site";
 
 export default function Home() {
     return (
@@ -116,7 +117,7 @@ export default function Home() {
                         <CardContent className="p-3">
                             <AsciiDecorator position="top-right" />
                             <TerminalPrompt
-                                command="git stats --user johndoe"
+                                command={`git stats --user ${siteConfig.global_username}`}
                                 className="text-left mb-2"
                             />
                             <GithubStats />

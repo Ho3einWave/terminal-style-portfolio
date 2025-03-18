@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { QueryProvider } from "@/components/providers/query-provider";
 
 export const metadata: Metadata = {
     title: "Hosein Baseri | Front-End Developer",
     description:
-        "Hi I’m Hosein Baseri, a front-end engineer based in Shiraz, Iran. Specializing in MERN stack development, I create robust web applications. With a fusion of technical expertise and design sensibilities, I craft visually stunning interfaces for exceptional user experiences.  ",
+        "Hi I'm Hosein Baseri, a front-end engineer based in Shiraz, Iran. Specializing in MERN stack development, I create robust web applications. With a fusion of technical expertise and design sensibilities, I craft visually stunning interfaces for exceptional user experiences.  ",
 };
 
 export default function RootLayout({
@@ -14,7 +15,9 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body>{children}</body>
+            <body>
+                <QueryProvider>{children}</QueryProvider>
+            </body>
         </html>
     );
 }
