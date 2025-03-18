@@ -48,13 +48,13 @@ export default function Home() {
                         <CardContent className="p-3 flex flex-col gap-y-2 h-full">
                             <AsciiDecorator position="top-right" />
                             <div className="flex items-center gap-3">
-                                <div className="w-16 h-16 overflow-hidden border border-zinc-700 rounded-none">
+                                <div className="w-16 h-16 overflow-hidden  rounded-none">
                                     <Image
-                                        src="/placeholder.svg?height=200&width=200"
+                                        src="/avatar.png"
                                         alt="Profile"
                                         width={200}
                                         height={200}
-                                        className="object-cover"
+                                        className="object-cover rounded-sm"
                                     />
                                 </div>
                                 <div className="text-left">
@@ -79,49 +79,34 @@ export default function Home() {
                                     user experiences.
                                 </p>
                             </div>
-                            <div className="flex gap-2 mt-1 ">
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="h-6 text-xs border-zinc-800 bg-zinc-900 text-zinc-200 hover:bg-zinc-800 hover:text-zinc-100 rounded-none px-2 py-0"
-                                >
-                                    <Mail className="mr-1 h-3 w-3" />
-                                    Contact
-                                </Button>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="h-6 text-xs border-zinc-800 bg-zinc-900 text-zinc-200 hover:bg-zinc-800 hover:text-zinc-100 rounded-none px-2 py-0"
-                                >
-                                    <ExternalLink className="mr-1 h-3 w-3" />
-                                    Resume
-                                </Button>
-                            </div>
-                            <div className="mt-3 grid grid-cols-4 gap-2">
-                                <SocialButton
-                                    icon={"github"}
-                                    href="https://github.com/ho3einwave"
-                                    label="GitHub"
-                                    command="open github"
-                                />
-                                <SocialButton
-                                    icon={"twitter"}
-                                    href="https://twitter.com/username"
-                                    label="Twitter"
-                                    command="open twitter"
-                                />
-                                <SocialButton
-                                    icon={"linkedin"}
-                                    href="https://linkedin.com/in/username"
-                                    label="LinkedIn"
-                                    command="open linkedin"
-                                />
-                                <SocialButton
-                                    icon={"mail"}
-                                    href="mailto:email@example.com"
-                                    label="Email"
-                                    command="send email"
-                                />
+
+                            <div className="flex-grow flex items-end w-full">
+                                <div className="mt-3 grid grid-cols-4 gap-2 w-full">
+                                    <SocialButton
+                                        icon={"github"}
+                                        href="https://github.com/ho3einwave"
+                                        label="GitHub"
+                                        command="open github"
+                                    />
+                                    <SocialButton
+                                        icon={"twitter"}
+                                        href="https://twitter.com/h03einwave"
+                                        label="Twitter"
+                                        command="open twitter"
+                                    />
+                                    <SocialButton
+                                        icon={"linkedin"}
+                                        href="https://linkedin.com/in/hosein-baseri-ba2232238"
+                                        label="LinkedIn"
+                                        command="open linkedin"
+                                    />
+                                    <SocialButton
+                                        icon={"mail"}
+                                        href="mailto:hoseinbaseri01@gmail.com"
+                                        label="Email"
+                                        command="send email"
+                                    />
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
