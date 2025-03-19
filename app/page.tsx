@@ -7,6 +7,7 @@ import {
     Mail,
     ExternalLink,
     Code,
+    Lock,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,7 @@ import MusicPlayer from "@/components/music-player";
 import SocialButton from "@/components/social-button";
 import { siteConfig } from "@/constants/site";
 import { getLatestPosts } from "@/lib/mdx";
+import { projects } from "@/constants/projects";
 
 export default async function Home() {
     const posts = await getLatestPosts();
@@ -173,7 +175,7 @@ export default async function Home() {
                                     className="text-left"
                                 />
                                 <Link
-                                    href="https://github.com/johndoe"
+                                    href={`https://github.com/${siteConfig.github_username}`}
                                     target="_blank"
                                 >
                                     <Button
@@ -224,53 +226,96 @@ export default async function Home() {
                             </div>
 
                             <div className="grid grid-cols-2 gap-3">
-                                {[1, 2].map((project) => (
+                                {projects.slice(0, 2).map((project) => (
                                     <div
-                                        key={project}
+                                        key={project.title}
                                         className="group relative overflow-hidden border border-zinc-800 bg-zinc-900 hover:border-zinc-700 transition-all duration-300 rounded-none shadow-sm"
                                     >
-                                        <div className="aspect-video w-full bg-zinc-950 relative">
+                                        <div className=" w-full bg-zinc-950 relative">
                                             <Image
-                                                src={`/placeholder.svg?height=200&width=400`}
-                                                alt={`Project ${project}`}
+                                                src={
+                                                    project.image ||
+                                                    `/placeholder.svg`
+                                                }
+                                                alt={project.title}
                                                 width={400}
                                                 height={200}
-                                                className="object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                                                className="object-cover h-[200px] opacity-80 group-hover:opacity-100 transition-opacity"
                                             />
                                             <div className="absolute top-0 right-0 bg-zinc-900/80 p-1">
-                                                <Github className="h-3 w-3 text-zinc-400" />
+                                                {project.isOpenSource ? (
+                                                    <Github className="h-3 w-3 text-zinc-400" />
+                                                ) : (
+                                                    <Lock className="h-3 w-3 text-zinc-400" />
+                                                )}
+                                            </div>
+                                            <div className="absolute top-0 left-0 bg-zinc-900/80 px-2 py-1">
+                                                <span
+                                                    className={`text-[10px] ${
+                                                        project.status ===
+                                                        "Active"
+                                                            ? "text-green-400"
+                                                            : project.status ===
+                                                              "Completed"
+                                                            ? "text-blue-400"
+                                                            : "text-yellow-400"
+                                                    }`}
+                                                >
+                                                    {project.status}
+                                                </span>
                                             </div>
                                         </div>
                                         <div className="p-2">
                                             <h3 className="font-bold text-zinc-100 text-sm">
-                                                Project_{project}
+                                                {project.title}
                                             </h3>
-                                            <div className="flex gap-1 text-xs mt-1">
-                                                <span className="px-1.5 py-0.5 bg-zinc-800 text-zinc-300 rounded-none text-[10px]">
-                                                    Next.js
-                                                </span>
-                                                <span className="px-1.5 py-0.5 bg-zinc-800 text-zinc-300 rounded-none text-[10px]">
-                                                    TypeScript
-                                                </span>
+                                            <div className="flex flex-wrap gap-1 text-xs mt-1">
+                                                {project.technologies
+                                                    .slice(0, 2)
+                                                    .map((tech) => (
+                                                        <span
+                                                            key={tech}
+                                                            className="px-1.5 py-0.5 bg-zinc-800 text-zinc-300 rounded-none text-[10px]"
+                                                        >
+                                                            {tech}
+                                                        </span>
+                                                    ))}
+                                                {project.technologies.length >
+                                                    2 && (
+                                                    <span className="px-1.5 py-0.5 bg-zinc-800 text-zinc-300 rounded-none text-[10px]">
+                                                        +
+                                                        {project.technologies
+                                                            .length - 2}
+                                                    </span>
+                                                )}
                                             </div>
                                             <div className="flex gap-1 mt-2 text-[10px]">
-                                                <Link
-                                                    href="#"
-                                                    className="text-zinc-400 hover:text-zinc-200 flex items-center"
-                                                >
-                                                    <Code className="h-3 w-3 mr-1" />
-                                                    Source
-                                                </Link>
-                                                <span className="text-zinc-600">
-                                                    |
-                                                </span>
-                                                <Link
-                                                    href="#"
-                                                    className="text-zinc-400 hover:text-zinc-200 flex items-center"
-                                                >
-                                                    <ExternalLink className="h-3 w-3 mr-1" />
-                                                    Demo
-                                                </Link>
+                                                {project.repository && (
+                                                    <Link
+                                                        href={
+                                                            project.repository
+                                                        }
+                                                        className="text-zinc-400 hover:text-zinc-200 flex items-center"
+                                                    >
+                                                        <Code className="h-3 w-3 mr-1" />
+                                                        Source
+                                                    </Link>
+                                                )}
+                                                {project.repository &&
+                                                    project.link && (
+                                                        <span className="text-zinc-600">
+                                                            |
+                                                        </span>
+                                                    )}
+                                                {project.link && (
+                                                    <Link
+                                                        href={project.link}
+                                                        className="text-zinc-400 hover:text-zinc-200 flex items-center"
+                                                    >
+                                                        <ExternalLink className="h-3 w-3 mr-1" />
+                                                        Demo
+                                                    </Link>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
@@ -294,38 +339,38 @@ export default async function Home() {
                                 className="text-left mb-2"
                             />
                             <div className="flex justify-center gap-3">
-                                <Button
-                                    variant="outline"
-                                    size="icon"
-                                    className="h-8 w-8 rounded-none border-zinc-800 bg-zinc-900 text-zinc-200 hover:bg-zinc-800 hover:text-zinc-100 hover:scale-105 transition-all"
+                                <Link
+                                    href={`https://github.com/${siteConfig.github_username}`}
+                                    target="_blank"
+                                    className="h-8 w-8 rounded-none border-zinc-800 bg-zinc-900 text-zinc-200 hover:bg-zinc-800 hover:text-zinc-100 hover:scale-105 transition-all border-[1px] flex items-center justify-center"
                                 >
                                     <Github className="h-4 w-4" />
                                     <span className="sr-only">GitHub</span>
-                                </Button>
-                                <Button
-                                    variant="outline"
-                                    size="icon"
-                                    className="h-8 w-8 rounded-none border-zinc-800 bg-zinc-900 text-zinc-200 hover:bg-zinc-800 hover:text-zinc-100 hover:scale-105 transition-all"
+                                </Link>
+                                <Link
+                                    href={`https://twitter.com/${siteConfig.twitter_username}`}
+                                    target="_blank"
+                                    className="h-8 w-8 rounded-none border-zinc-800 bg-zinc-900 text-zinc-200 hover:bg-zinc-800 hover:text-zinc-100 hover:scale-105 transition-all border-[1px] flex items-center justify-center"
                                 >
                                     <Twitter className="h-4 w-4" />
                                     <span className="sr-only">Twitter</span>
-                                </Button>
-                                <Button
-                                    variant="outline"
-                                    size="icon"
-                                    className="h-8 w-8 rounded-none border-zinc-800 bg-zinc-900 text-zinc-200 hover:bg-zinc-800 hover:text-zinc-100 hover:scale-105 transition-all"
+                                </Link>
+                                <Link
+                                    href={`https://linkedin.com/in/${siteConfig.linkedin_username}`}
+                                    target="_blank"
+                                    className="h-8 w-8 rounded-none border-zinc-800 bg-zinc-900 text-zinc-200 hover:bg-zinc-800 hover:text-zinc-100 hover:scale-105 transition-all border-[1px] flex items-center justify-center"
                                 >
                                     <Linkedin className="h-4 w-4" />
                                     <span className="sr-only">LinkedIn</span>
-                                </Button>
-                                <Button
-                                    variant="outline"
-                                    size="icon"
-                                    className="h-8 w-8 rounded-none border-zinc-800 bg-zinc-900 text-zinc-200 hover:bg-zinc-800 hover:text-zinc-100 hover:scale-105 transition-all"
+                                </Link>
+                                <Link
+                                    href={`mailto:${siteConfig.email}`}
+                                    target="_blank"
+                                    className="h-8 w-8 rounded-none border-zinc-800 bg-zinc-900 text-zinc-200 hover:bg-zinc-800 hover:text-zinc-100 hover:scale-105 transition-all border-[1px] flex items-center justify-center"
                                 >
                                     <Mail className="h-4 w-4" />
                                     <span className="sr-only">Email</span>
-                                </Button>
+                                </Link>
                             </div>
                         </CardContent>
                     </Card>

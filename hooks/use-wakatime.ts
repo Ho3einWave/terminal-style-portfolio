@@ -1,4 +1,5 @@
 import { httpClient } from "@/lib/httpClient";
+import { siteConfig } from "@/constants/site";
 import { Wakatime } from "@/types/wakatime";
 import { useQuery } from "@tanstack/react-query";
 
@@ -51,7 +52,9 @@ const processTopItems = (items: any[]) => {
 };
 
 const fetchWakatimeData = async () => {
-    const response = await httpClient.get<Wakatime>("/wakatime/stats");
+    const response = await httpClient.get<Wakatime>(
+        `/wakatime/stats?user=${siteConfig.wakatime_username}`
+    );
     return response.data;
 };
 

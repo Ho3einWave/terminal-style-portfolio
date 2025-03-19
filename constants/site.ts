@@ -9,4 +9,5 @@ export const siteConfig = {
     linkedin_username: "hosein-baseri-ba2232238",
     email: "hoseinbaseri01@gmail.com",
     worker_api_base_url: "https://worker.hoseinwave.ir/api",
+    wakatime_username: "74e89342-a770-4ad7-80e1-f757c25e64ea",
 };
