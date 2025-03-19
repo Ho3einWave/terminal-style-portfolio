@@ -56,7 +56,7 @@ export default async function Home() {
                             <div className="flex items-center gap-3">
                                 <div className="w-16 h-16 overflow-hidden  rounded-none">
                                     <Image
-                                        src="/avatar.png"
+                                        src={siteConfig.avatar}
                                         alt="Profile"
                                         width={200}
                                         height={200}
@@ -69,46 +69,38 @@ export default async function Home() {
                                         <span className="animate-pulse">_</span>
                                     </h1>
                                     <p className="text-zinc-400 text-sm">
-                                        FrontEnd Developer
+                                        {siteConfig.title}
                                     </p>
                                 </div>
                             </div>
 
                             <div className="mt-2 text-sm text-zinc-300 text-left border-l-2 border-zinc-700 pl-2">
-                                <p>
-                                    I'm a self-taught software engineer and
-                                    designer from Shiraz, Iran. Specializing in
-                                    MERN stack development, I create robust web
-                                    applications. With a fusion of technical
-                                    expertise and design sensibilities, I craft
-                                    visually stunning interfaces for exceptional
-                                    user experiences.
-                                </p>
+                                <p>{siteConfig.bio}</p>
                             </div>
 
                             <div className="flex-grow flex items-end w-full">
                                 <div className="mt-3 grid grid-cols-4 gap-2 w-full">
                                     <SocialButton
                                         icon={"github"}
-                                        href="https://github.com/ho3einwave"
+                                        href={`https://github.com/${siteConfig.github_username}`}
                                         label="GitHub"
                                         command="open github"
                                     />
                                     <SocialButton
                                         icon={"twitter"}
-                                        href="https://twitter.com/h03einwave"
+                                        href={`https://twitter.com/${siteConfig.twitter_username}`}
                                         label="Twitter"
                                         command="open twitter"
                                     />
                                     <SocialButton
                                         icon={"linkedin"}
-                                        href="https://linkedin.com/in/hosein-baseri-ba2232238"
+                                        href={`https://linkedin.com/in/${siteConfig.linkedin_username}`}
                                         label="LinkedIn"
                                         command="open linkedin"
                                     />
                                     <SocialButton
                                         icon={"mail"}
-                                        href="mailto:hoseinbaseri01@gmail.com"
+                                        href={`mailto:${siteConfig.email}`}
                                         label="Email"
                                         command="send email"
                                     />
