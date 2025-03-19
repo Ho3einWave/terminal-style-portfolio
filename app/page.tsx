@@ -21,8 +21,11 @@ import AsciiDecorator from "@/components/ascii-decorator";
 import MusicPlayer from "@/components/music-player";
 import SocialButton from "@/components/social-button";
 import { siteConfig } from "@/constants/site";
+import { getLatestPosts } from "@/lib/mdx";
 
-export default function Home() {
+export default async function Home() {
+    const posts = await getLatestPosts();
+
     return (
         <main className="min-h-screen bg-zinc-950 text-zinc-200 p-3 font-mono">
             <div className="mx-auto max-w-5xl">
@@ -195,7 +198,7 @@ export default function Home() {
                                 command="find ./blogs -type f -name '*.md' | sort -r"
                                 className="text-left mb-2"
                             />
-                            <BlogPosts />
+                            <BlogPosts posts={posts} />
                         </CardContent>
                     </Card>
 

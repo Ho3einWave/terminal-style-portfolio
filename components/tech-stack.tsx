@@ -21,7 +21,7 @@ export default function TechStack() {
                 {technologies.map((tech, index) => (
                     <div
                         key={tech.name}
-                        className={`flex justify-between items-center p-2 bg-zinc-800/50 border ${tech.color} rounded-none hover:bg-zinc-800 transition-all duration-300 group relative`}
+                        className={`flex justify-between items-center p-2 bg-zinc-800/50 rounded-none hover:bg-zinc-800 transition-all duration-300 group relative border border-zinc-700`}
                         onMouseEnter={() => handleMouseEnter(tech.name)}
                         onMouseLeave={() => setHoveredTech(null)}
                     >
