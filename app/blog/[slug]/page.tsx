@@ -1,18 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import {
-    ArrowLeft,
-    Calendar,
-    Clock,
-    Tag,
-    Github,
-    Twitter,
-    LinkIcon,
-} from "lucide-react";
+import { ArrowLeft, Calendar, Clock, Tag, Twitter } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import TerminalPrompt from "@/components/terminal-prompt";
-import { getAllPosts, Post, getPostBySlug } from "@/lib/mdx";
+import { getAllPosts, getPostBySlug, isPostExists } from "@/lib/mdx";
 import CopyLinkButton from "@/components/CopyLinkButton";
 import { siteConfig } from "@/constants/site";
 interface BlogPostPageProps {
@@ -42,6 +33,10 @@ export async function generateMetadata({
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
     const { slug } = await params;
+    const isExists = await isPostExists(slug);
+    if (!isExists) {
+        notFound();
+    }
     const { content, frontmatter } = await getPostBySlug(slug);
 
     return (
@@ -128,14 +123,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                                 <Twitter className="h-3 w-3 mr-1" />
                                 Twitter
                             </Link>
-                            <Link
-                                href={`https://github.com/intent/tweet?url=${siteConfig.url}/blog/${slug}&text=${frontmatter.title}`}
-                                target="_blank"
-                                className="h-8 text-xs border-[1px] border-zinc-700 bg-zinc-800/50 text-zinc-300 hover:bg-zinc-800 hover:text-zinc-100 rounded-none flex items-center justify-center px-2"
-                            >
-                                <Github className="h-3 w-3 mr-1" />
-                                GitHub
-                            </Link>
+
                             <CopyLinkButton />
                         </div>
                     </div>

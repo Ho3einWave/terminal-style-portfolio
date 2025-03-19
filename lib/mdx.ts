@@ -75,3 +75,8 @@ export async function getLatestPosts() {
     const posts = await getAllPosts();
     return posts.slice(0, 3);
 }
+
+export async function isPostExists(slug: string) {
+    const filePath = path.join(contentDirectory, `${slug}.mdx`);
+    return fs.existsSync(filePath);
+}
